@@ -7,6 +7,7 @@ React using a MVI architecture. Model View Intent (MVI), which is similar to MVC
 * [React Fundamentals](https://app.pluralsight.com/library/courses/react-fundamentals-update/table-of-contents)
 * [Redux](https://redux.js.org/)
 * [React-redux](https://react-redux.js.org/)
+* Create local branch and push to remote [stackoverflow](https://stackoverflow.com/questions/1519006/how-do-you-create-a-remote-git-branch)
 
 ## Commands and Code
 * [setInterval](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval) method from Javascript.
