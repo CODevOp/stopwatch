@@ -16,11 +16,13 @@ let intents = {
 
 }
 const view = (model) => { 
+    console.log(model);
+    
     let minutes = Math.floor(model.time / 60 );
     let seconds = model.time - (minutes * 60);
     let secondsFormatted = `${seconds < 10 ? '0' : ''}${seconds}`;
     let handler = (event) => {
-        model = update(model, model.running ? 'STOP' : 'START');
+        container.dispatch(model.running ? 'STOP' : 'START');
     }
     return <div>
     <p>{minutes}:{secondsFormatted}</p>
@@ -28,7 +30,7 @@ const view = (model) => {
     </div>
 }
 
-const update = (model , intent) => {
+const update = (model = { running: false, time: 0 } , intent) => {
     const updates = {
         'START': (model) => Object.assign(model, {running: true}),
         'STOP': (model) => Object.assign(model, {running: false}),
@@ -36,20 +38,37 @@ const update = (model , intent) => {
     };
     return updates[intent](model);
 }
+const createStore = (reducer) => {
+    let internalState;
+    let handlers = []; // array of handlers
+    return {
+        dispatch: (intent) => {
+           internalState = reducer(internalState, intent);
+           console.log(handlers);
+           
+           handlers.forEach(handler => {handler(); }); // call each handler
+        },
+        subscribe: (handler) => {
+            handlers.push(handler);
+        },
+        getState: () => internalState
+    };
+};
+
+let container = createStore(update);
 
 const render = () => {
-    ReactDOM.render(view(model), 
+    ReactDOM.render(view(container.getState()), 
         document.getElementById('root')
     );
 };
 
-render();
+container.subscribe(render);
 
+let timer = 1000; // 1 second, 1 milliseconds
 setInterval(() => {
-    model = update(model, 'TICK');
-    console.log(model.time);
-    render();
-}, 1000)
+    container.dispatch('TICK');
+}, timer)
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

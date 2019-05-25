@@ -19,3 +19,91 @@ React using a MVI architecture. Model View Intent (MVI), which is similar to MVC
     }, 1000)
     ```
     1. setInterval takes a function and a interval in milliseconds.
+* Create a new branch
+    ```JavaScript
+   // create a new branch
+   git branch StateContainer
+   
+   // start using the new branch
+   git checkout StateContainer
+   
+   // create the new branch on remote
+   git push -u origin  StateContainer
+    ```
+* Modify application to use state container
+    ```Javascript
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    const view = (model) => { 
+        let minutes = Math.floor(model.time / 60 );
+        let seconds = model.time - (minutes * 60);
+        let secondsFormatted = `${seconds < 10 ? '0' : ''}${seconds}`;
+        let handler = (event) => { // *9 
+            container.dispatch(model.running ? 'STOP' : 'START'); // change to dispatch on container
+        }
+        return <div>
+        <p>{minutes}:{secondsFormatted}</p>
+        <button onClick={handler} >{model.running ? 'Stop': 'Start'}</button>
+        </div>
+    }
+
+    const update = (model = { running: false, time: 0 } , intent) => { // *4 
+        const updates = {
+            'START': (model) => Object.assign(model, {running: true}),
+            'STOP': (model) => Object.assign(model, {running: false}),
+            'TICK':  (model) => Object.assign(model, {time: model.time + (model.running ? 1 : 0 )})
+        };
+        return updates[intent](model);
+    }
+
+    let container = {} // empty container
+
+    const render = () => {
+        ReactDOM.render(view(container.getState()), // *6 call to getState
+            document.getElementById('root')
+        );
+    };
+
+    container.subscribe(render); // * 3 call to subscribe & *10
+
+    setInterval(() => {
+        container.dispatch('TICK'); // *2 call to dispatch & *7 pass in intent  & *8 
+    }, 1000)
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ```
+    1.  state will have 3 methods, getState, dispatch, and subscribe.
+    2.  dispatch applies an intent to application state
+    3.  subscribe registers the callback and is called when the application state changes
+    4.  update, change model to pass in an initial state to the model
+    5.  create state container as an empty object
+    6.  change render function, the view will call the state container getState().
+    7.  The setInterval timer will dispatch intents to the container.
+    8.  setInterval will no longer call render, the state container will control and track the communication through subscribe.
+    9.  change the timer handler function to call the container dispatch method to togger 'START' or 'STOP' on a timer. 
+    10. change the render method calls from directly calling render to calling render through the state container by calling a subscibe on the container.
+
+* Create state container 
+    ```Javascript
+    const createStore = (reducer) => {
+        let internalState;
+        let handlers = []; // array of handlers
+        return {
+            dispatch: (intent) => {
+            internalState = reducer(internalState, intent);
+            console.log(handlers);
+            
+            handlers.forEach(handler => {handler(); }); // call each handler
+            },
+            subscribe: (handler) => {
+                handlers.push(handler);
+            },
+            getState: () => internalState
+        };
+    };
+
+    let container = createStore(update);
+
+    ```
+    1. container will call new function createStore.
+    2. new function createStore will receive a reducer
+    3. createStore will return state object with the 3 methods dispatch, subscribe and getState
+    4. 
