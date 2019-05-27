@@ -30,6 +30,7 @@ React using a MVI architecture. Model View Intent (MVI), which is similar to MVC
    // create the new branch on remote
    git push -u origin  StateContainer
     ```
+
 * Modify application to use state container
     ```Javascript
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -93,9 +94,11 @@ React using a MVI architecture. Model View Intent (MVI), which is similar to MVC
             
             handlers.forEach(handler => {handler(); }); // call each handler
             },
+
             subscribe: (handler) => {
                 handlers.push(handler);
             },
+
             getState: () => internalState
         };
     };
@@ -104,6 +107,8 @@ React using a MVI architecture. Model View Intent (MVI), which is similar to MVC
 
     ```
     1. container will call new function createStore.
-    2. new function createStore will receive a reducer
-    3. createStore will return state object with the 3 methods dispatch, subscribe and getState
-    4. 
+    2. new function createStore() will receive a reducer
+    3. createStore() will return state object with the 3 methods dispatch(), subscribe() and getState().
+    4. dispatch() will update the state. Everytime the timer ticks, dispatch is called updating state and updating each of the hanlders. The onClick event of the the Start/Stop button will call dispatch() to change the state of the running variable, toggling between Start and Stop.
+    5. subscibe() is registered with any method(s) or handlers, requiring notification of state update.
+    6. The handler functions will call getstate() to update the controls, objects or events.
