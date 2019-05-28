@@ -110,5 +110,38 @@ React using a MVI architecture. Model View Intent (MVI), which is similar to MVC
     2. new function createStore() will receive a reducer
     3. createStore() will return state object with the 3 methods dispatch(), subscribe() and getState().
     4. dispatch() will update the state. Everytime the timer ticks, dispatch is called updating state and updating each of the hanlders. The onClick event of the the Start/Stop button will call dispatch() to change the state of the running variable, toggling between Start and Stop.
-    5. subscibe() is registered with any method(s) or handlers, requiring notification of state update.
+    5. Callbacks are registered with subscibe(). Each callback function will be called when the staet and an intent is passed into dispatch().
     6. The handler functions will call getstate() to update the controls, objects or events.
+
+* Implement a Redux Application State Container
+* Install
+   
+    ```Javascript
+    npm install redux
+    ```
+* Use Redux
+    ```Javascript
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    import { createStore } from 'redux'
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    const update = (model = { running: false, time: 0 } , action) => {
+        const updates = {
+            'START': (model) => Object.assign(model, {running: true}),
+            'STOP': (model) => Object.assign(model, {running: false}),
+            'TICK':  (model) => Object.assign(model, {time: model.time + (model.running ? 1 : 0 )})
+        };
+        return  (updates[action.type] || (() => model))(model);
+    }
+    let container = createStore(update);
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    setInterval(() => {
+        container.dispatch({type: 'TICK'});
+    }, timer)
+    ```
+    1. [Redux Reference](https://react-redux.js.org/)
+    2. A Reducer takes state and an intent and converts it to an updated state.
+    3. Intents are Actions in Redux.
+    4. 4 functions will be used createStore, dispatch, getState and subscribe
+    5. Delete custom createStore()
+    6. TODO: describe Redux use.
+
