@@ -117,7 +117,8 @@ React using a MVI architecture. Model View Intent (MVI), which is similar to MVC
 * Install
    
     ```Javascript
-    npm install redux
+    // * 6
+    npm install redux 
     ```
 * Use Redux
     ```Javascript
@@ -141,7 +142,14 @@ React using a MVI architecture. Model View Intent (MVI), which is similar to MVC
     1. [Redux Reference](https://react-redux.js.org/)
     2. A Reducer takes state and an intent and converts it to an updated state.
     3. Intents are Actions in Redux.
-    4. 4 functions will be used createStore, dispatch, getState and subscribe
-    5. Delete custom createStore()
-    6. TODO: describe Redux use.
+    4. 4 functions will be used createStore, dispatch, getState and subscribe. The original state container was built using the same priciples of the Redux API. This made converting from the custom state container to Redux API very simple.
+    5. Delete custom createStore() it will be replaced with the Redux API.
+    6. Install Redux with npm install.
+    7. Import createStore module from redux library.
+    8. Create a container object with Redux.createStore passing in the update function.
+    9. Replace call to render with call to container.subscribe() registering render function.
+    10. Replace calls to update with call to dispatch container.dispatch(). The calls to dispatch pass in a JSON object, including type. Model is registered through the update function.
+    11. The render function is updated to call the container.getState() and it updates an update view.
+    
+* Create a 3rd Branch to implement React-Redux
 
