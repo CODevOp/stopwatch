@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 import { createStore } from 'redux'
+import { connect } from 'react-redux';
 
 let model = {
     running: false,
@@ -16,7 +17,7 @@ let intents = {
     RESET: 'RESET',
 
 }
-const view = (model) => { 
+const StopWatch = ReactRedux.connect(mapStateToProps, mapDispatchToProps)((model) => { 
     console.log(model);
     
     let minutes = Math.floor(model.time / 60 );
@@ -29,7 +30,7 @@ const view = (model) => {
     <p>{minutes}:{secondsFormatted}</p>
     <button onClick={handler} >{model.running ? 'Stop': 'Start'}</button>
     </div>
-}
+});
 
 const update = (model = { running: false, time: 0 } , action) => {
     const updates = {

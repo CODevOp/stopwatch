@@ -153,5 +153,53 @@ React using a MVI architecture. Model View Intent (MVI), which is similar to MVC
     11. The render function is updated to call the container.getState() and it updates an update view.
     
 * Use React-Redux State Container
-Create a 3rd Branch to implement React-Redux
-
+    1. Create a 3rd Branch to implement React-Redux
+    ```Javascript
+     // create a new branch
+   git branch ReactReduxContainer
+   
+   // start using the new branch
+   git checkout ReactReduxContainer
+   
+   // create the new branch on remote
+   git push -u origin  ReactReduxContainer
+    ```
+    2. Install react-redux
+    ```Javascript
+    npm install react-redux
+    ```
+    
+    3. Use reach-redux 
+    ```Javascript
+    // add to index.js
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    import { connect } from 'react-redux';
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ```
+    
+    4. Wrap view in a react component  
+   ```Javascript
+    // add to index.js
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  const StopWatch = ReactRedux.connect(mapStateToProps, mapDispatchToProps)((model) => { 
+        console.log(model);
+        
+        let minutes = Math.floor(model.time / 60 );
+        let seconds = model.time - (minutes * 60);
+        let secondsFormatted = `${seconds < 10 ? '0' : ''}${seconds}`;
+        let handler = (event) => {
+            container.dispatch(model.running ? {type: 'STOP'} : {type: 'START'});
+        }
+        return <div>
+        <p>{minutes}:{secondsFormatted}</p>
+        <button onClick={handler} >{model.running ? 'Stop': 'Start'}</button>
+        </div>
+    });
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ```
+    * changes to view
+        1. Wrap view in call to connect
+        2. Pass in mapStateToProps and mamDispatchToProps
+        3. Cange view name to StopWatch, name with camel case because it is a component.
+  
+    5. Add new functions mapStateToProps and mamDispatchToProps
