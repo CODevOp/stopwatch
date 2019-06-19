@@ -21,6 +21,7 @@ React using a MVI architecture. Model View Intent (MVI), which is similar to MVC
     1. setInterval takes a function and a interval in milliseconds.
 * Create a new branch
     ```JavaScript
+
    // create a new branch
    git branch StateContainer
    
@@ -151,5 +152,6 @@ React using a MVI architecture. Model View Intent (MVI), which is similar to MVC
     10. Replace calls to update with call to dispatch container.dispatch(). The calls to dispatch pass in a JSON object, including type. Model is registered through the update function.
     11. The render function is updated to call the container.getState() and it updates an update view.
     
-* Create a 3rd Branch to implement React-Redux
+* Use React-Redux State Container
+Create a 3rd Branch to implement React-Redux
 
