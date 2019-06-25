@@ -3,6 +3,8 @@ The design and code for this timer application come from the Pluralsight course 
 
 React using a MVI architecture. Model View Intent (MVI), which is similar to MVC. MVI helps flush out purpose of functionality. 
 
+Note on Branches; This repository has implemented three different types of state containers. The master branch demonstrates the home spun container. The StateContainer branch converts the first container to a Redux Container. The last branch, ReactRecuxContainer, converts to a ReactRedux container. 
+
 ## References
 * [React Fundamentals](https://app.pluralsight.com/library/courses/react-fundamentals-update/table-of-contents)
 * [Redux](https://redux.js.org/)
