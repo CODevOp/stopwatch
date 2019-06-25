@@ -199,7 +199,88 @@ React using a MVI architecture. Model View Intent (MVI), which is similar to MVC
     ```
     * changes to view
         1. Wrap view in call to connect
-        2. Pass in mapStateToProps and mamDispatchToProps
-        3. Cange view name to StopWatch, name with camel case because it is a component.
+        2. Pass in mapStateToProps and mapDispatchToProps functions.
+        3. Cange view name to StopWatch, name with upper case because it is a react component.
   
-    5. Add new functions mapStateToProps and mamDispatchToProps
+    5. Add new functions mapStateToProps and mapDispatchToProps
+    ```Javascript
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        
+    function mapStateToProps(state) {
+        return {};
+    }
+
+    function mapDispatchToProps(dispatch){
+        return {};
+    }
+    const StopWatch ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ```
+    * implemented simpe shell of a function
+        1. The name is intuitive for both functions. One maps State to maps State to a set of prpoerties and the other or takes Dispatch and maps it to a set of properties.
+        2. Returning an empty object containing some properties for the component is a valid implementation.
+        3. Both function will be further defined.
+    
+    6. Replace render with ReactRedux.Provider
+    ```Javascript
+    ReactDOM.render(
+        <Provider store={container}>
+            <StopWatch />
+        </  Provider>
+        , 
+        document.getElementById('root')
+    );
+    ```
+    * Make call to StopWatch component
+        1. The previous version made call to the view function and passed the state container.
+        2. ReactRedux handles this, so the call is replaced with a call to the StopWatch component
+        3. ReactRedux requires the component is wrapped in a Provider.
+        4. The entire render function is replaced with a direct call to ReactDOM.render()
+        5. The call to subscriber to the container store is also removed. ReactRedux will handle the subsription call.
+    
+    7. Final changes to integrate ReactRedux 
+    ```Javascript
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~        
+    function mapStateToProps(state) {
+        return state;
+    }
+
+    function mapDispatchToProps(dispatch){
+        return {
+            onStart: () => {dispatch({type: 'START'});} ,
+            onStop: () => {dispatch({type: 'STOP'});} ,
+        };
+    }
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~        
+    const StopWatch = connect(mapStateToProps, mapDispatchToProps)((props) => { 
+        console.log(props);
+        
+        let minutes = Math.floor(props.time / 60 );
+        let seconds = props.time - (minutes * 60);
+        let secondsFormatted = `${seconds < 10 ? '0' : ''}${seconds}`;
+
+        return <div>
+        <p>{minutes}:{secondsFormatted}</p>
+        <button onClick={props.running ? props.onStop : props.onStart} >{props.running ? 'Stop': 'Start'}</button>
+        </div>
+    });
+
+    const update = (model = { running: false, time: 0 } , action) => {
+        const updates = {
+            'START': (model) => Object.assign({}, model, {running: true}),
+            'STOP': (model) => Object.assign({}, model, {running: false}),
+            'TICK':  (model) => Object.assign({}, model, {time: model.time + (model.running ? 1 : 0 )})
+        };
+        return  (updates[action.type] || (() => model))(model);
+    }
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ```
+    * changes explained
+        1. MapStateToProps; needs to only return state.
+        2. mapDispatchToProps; needs to map the events from the start/stop button.
+        3. StopWatch; 
+            1. replace model with with props
+            2. remove event handler
+            3. replace call to handler with conditional (ternary) operator, shortcut for if statement.
+        4. update or reducer function; ReactRedux optimize changes. It does this by checking if the application state has changed. It does this with a equality check. The state model is the same event though the values haved changed. To force it to update the view use an empty object. This will cause it to always see the events as a change to the state. 
+
+             
